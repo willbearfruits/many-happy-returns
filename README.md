@@ -25,8 +25,21 @@ Stretch*. Throw the phases away, replace them with noise, overlap enormous
 windows. The whole piece rests on his idea; this is an independent
 implementation written from the method, not a port of his code.
 
-The song is **“It’s Your Birthday” by Monk Turner + Fascinoma**, used under
-Creative Commons. Check the exact terms before redistributing.
+The song is **“It’s Your Birthday!” by Monk Turner + Fascinoma**, released
+**[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)** — verified against
+the file's own Vorbis `copyright` tag and against the
+[Free Music Archive listing](https://freemusicarchive.org/music/Monk_Turner__Fascinoma/The_New_Birthday_Song_Contest/Its_Your_Birthday_1839/).
+
+CC BY 3.0 permits commercial use and adaptations. What it requires is
+attribution: the title, the artist, a link to the source, a link to the licence,
+and — because stretching it 36.7 million times is unmistakably an adaptation —
+an indication that the work was modified. All five are on the page itself. **Do
+not trim that credit down**; it is the licence condition, not decoration.
+
+There is a pleasing symmetry in the source: it won WFMU and the Free Music
+Archive's contest to write a *copyright-free replacement* for "Happy Birthday to
+You", which was locked up at the time. The one birthday song anyone was free to
+use is the one that gets to run for forty-two years.
 
 ## Two files
 

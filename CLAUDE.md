@@ -63,11 +63,18 @@ python3 -m http.server 8000
 - Silencing must stop the buffers already scheduled ahead, not merely stop
   queueing new ones.
 
-## Credit
+## Credit — one of these is a legal condition
 
-The algorithm is Nasca Octavian Paul's (*Paul's Extreme Sound Stretch*); the
-song is Monk Turner + Fascinoma's. Both credits are in `README.md` and the song
-credit is on the page itself. Do not drop either while refactoring.
+The algorithm is Nasca Octavian Paul's (*Paul's Extreme Sound Stretch*). Credit
+him in `README.md`.
+
+The song is **“It’s Your Birthday!” by Monk Turner + Fascinoma, CC BY 3.0**
+(verified 2026-07-29 against the file's Vorbis `copyright` tag and the Free Music
+Archive listing). CC BY 3.0 allows commercial use and adaptation, but requires
+attribution carrying **all five** of: title, artist, source link, licence link,
+and a statement that the work was modified — the stretch is an adaptation. That
+full credit lives in `#credit` on the page. **Shortening it breaks the licence.**
+If a redesign needs the footer smaller, make the type smaller, not the credit.
 
 Related: the JUCE implementation of the same algorithm lives at
 `~/Projects/extremestretch/`.

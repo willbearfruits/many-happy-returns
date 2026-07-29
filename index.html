@@ -111,7 +111,15 @@
   #facts b     { font-weight: 400; color: #d8c4a0; }
 
   #about  { margin: 0 0 1.6em; color: #6d6055; }
-  #credit { margin: 0; color: #5a4f46; }
+  #credit { margin: 0; color: #5a4f46; line-height: 2; }
+
+  #credit a {
+    color: #7a6a5c;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  #credit a:hover { color: #c0a882; }
 
   /* Only fold the prose away when there is genuinely no room for it. */
   @media (max-height: 440px) { #about { display: none; } }
@@ -143,7 +151,10 @@
     </p>
 
     <p id="credit">
-      source: “it’s your birthday” by monk turner + fascinoma
+      source: <a href="https://freemusicarchive.org/music/Monk_Turner__Fascinoma/The_New_Birthday_Song_Contest/Its_Your_Birthday_1839/">“it’s your birthday!”</a>
+      by monk turner + fascinoma<br>
+      <a href="https://creativecommons.org/licenses/by/3.0/">cc&nbsp;by&nbsp;3.0</a>
+      · time-stretched, otherwise unaltered
     </p>
   </div>
 </div>
