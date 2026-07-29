@@ -4,6 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>many happy returns</title>
+<meta name="description" content="One birthday song stretched across forty-two years. Arrive whenever; it has gone on without you.">
+
+<!-- Share card. The image is a capture of the piece's own character field,
+     generated from ?og=1 — so even the preview is made of typed glyphs. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="many happy returns">
+<meta property="og:url" content="https://willbearfruits.github.io/many-happy-returns/">
+<meta property="og:title" content="many happy returns">
+<meta property="og:description" content="One birthday song stretched across forty-two years, 2026–2068. Nothing is stored and nothing is streamed — arrive whenever, and it has gone on without you.">
+<meta property="og:image" content="https://willbearfruits.github.io/many-happy-returns/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A dense field of typed characters in candlelight colours, gathered symmetrically around the words MANY HAPPY RETURNS.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="many happy returns">
+<meta name="twitter:description" content="One birthday song stretched across forty-two years, 2026–2068.">
+<meta name="twitter:image" content="https://willbearfruits.github.io/many-happy-returns/og.jpg">
 <style>
   /* Layout, colour and legibility only. Every visible form on this page is a
      typed character — the field is fillText, and the panel below is text. No
@@ -429,6 +448,12 @@ let stretch = 0;
 
 let cols = 0, rows = 0, cellW = 0, cellH = 0, fontSize = 0;
 let nicheX = 0.58, nicheY = 0.94;
+
+// ?og=1 renders the field at share-card size with the title drawn onto the
+// canvas, so the social preview is a photograph of character art rather than a
+// picture of something else. Used to generate og.jpg; never hit by visitors.
+const OG_MODE = new URLSearchParams(location.search).has('og');
+const OG_W = 1200, OG_H = 630;
 let heat = new Float32Array(0);
 let spectrum = null;
 let audioStarted = false;
@@ -502,12 +527,14 @@ function mulberry32(seed) {
 // --- the field -------------------------------------------------------------
 
 function resize() {
-  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const dpr  = OG_MODE ? 1 : Math.min(2, window.devicePixelRatio || 1);
+  const cssW = OG_MODE ? OG_W : window.innerWidth;
+  const cssH = OG_MODE ? OG_H : window.innerHeight;
 
-  canvas.width  = Math.floor(window.innerWidth  * dpr);
-  canvas.height = Math.floor(window.innerHeight * dpr);
+  canvas.width  = Math.floor(cssW * dpr);
+  canvas.height = Math.floor(cssH * dpr);
 
-  fontSize = Math.max(11, Math.round(Math.min(window.innerWidth, window.innerHeight) / 52)) * dpr;
+  fontSize = Math.max(11, Math.round(Math.min(cssW, cssH) / 52)) * dpr;
   ctx2d.font = fontSize + 'px ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace';
 
   cellW = ctx2d.measureText('█').width || fontSize * 0.6;
@@ -634,6 +661,32 @@ function draw(elapsed, progress, tick) {
     for (let i = 0; i < b.length; i += 3)
       ctx2d.fillText(b[i + 2], b[i] * cellW, b[i + 1] * cellH);
   }
+
+  if (OG_MODE) drawShareCardTitle();
+}
+
+/** The share card's lettering — still fillText, still characters. */
+function drawShareCardTitle() {
+  const mono = 'px ui-monospace, "DejaVu Sans Mono", Menlo, Consolas, monospace';
+
+  ctx2d.textAlign = 'center';
+  ctx2d.textBaseline = 'middle';
+
+  ctx2d.font = 'bold ' + Math.round(canvas.height * 0.072) + mono;
+  ctx2d.fillStyle = '#fff3d6';
+  ctx2d.fillText('MANY  HAPPY  RETURNS', canvas.width / 2, canvas.height * 0.44);
+
+  ctx2d.font = Math.round(canvas.height * 0.031) + mono;
+  ctx2d.fillStyle = '#c0a882';
+  ctx2d.fillText('one birthday song stretched across forty-two years',
+                 canvas.width / 2, canvas.height * 0.56);
+
+  ctx2d.font = Math.round(canvas.height * 0.026) + mono;
+  ctx2d.fillStyle = '#8a7663';
+  ctx2d.fillText('2026  ―  2068', canvas.width / 2, canvas.height * 0.64);
+
+  ctx2d.textAlign = 'left';
+  ctx2d.textBaseline = 'top';
 }
 
 const $ = (id) => document.getElementById(id);
@@ -646,6 +699,26 @@ function localDate(ms) {
   const pad = (n) => String(n).padStart(2, '0');
   return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 }
+
+/** Wall-clock time where the viewer is standing. The piece is about *now*, so
+    printing UTC just tells everybody the wrong hour. */
+function localClock(ms) {
+  const d = new Date(ms);
+  const pad = (n) => String(n).padStart(2, '0');
+  return localDate(ms) + ' ' +
+         pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+}
+
+const TZ_LABEL = (() => {
+  try {
+    const parts = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
+                    .formatToParts(new Date());
+    const found = parts.find((p) => p.type === 'timeZoneName');
+    return found ? ' ' + found.value : '';
+  } catch (err) {
+    return '';
+  }
+})();
 
 function plural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
 
@@ -678,9 +751,8 @@ function updatePanel() {
       plural(p.days, 'day') + ' in';
   }
 
-  const shown = new Date(EPOCH + Math.max(0, elapsed) * 1000);
   $('clock').textContent =
-    shown.toISOString().replace('T', ' ').slice(0, 19) + 'Z  ·  ' +
+    localClock(EPOCH + Math.max(0, elapsed) * 1000) + TZ_LABEL + '  ·  ' +
     (progress * 100).toFixed(7) + '% complete';
 
   const width  = window.innerWidth < 520 ? 24 : 40;
@@ -832,6 +904,8 @@ function handleWorkerMessage(e) {
 // --- boot ------------------------------------------------------------------
 
 (async function boot() {
+  if (OG_MODE) $('panel').style.display = 'none';
+
   resize();
   window.addEventListener('resize', resize);
 
